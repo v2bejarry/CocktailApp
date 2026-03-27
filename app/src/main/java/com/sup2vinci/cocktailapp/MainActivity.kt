@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import com.sup2vinci.cocktailapp.viewmodel.MainViewModel
 import com.sup2vinci.cocktailapp.view.MainScreen
 import com.sup2vinci.cocktailapp.view.SecondScreen
+import com.sup2vinci.cocktailapp.view.DetailScreen
 import com.sup2vinci.cocktailapp.ui.theme.CocktailAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,18 +22,29 @@ class MainActivity : ComponentActivity() {
             CocktailAppTheme {
                 var currentScreen by remember { mutableStateOf("main") }
 
-                if (currentScreen == "main") {
-                    MainScreen(
-                        viewModel = viewModel,
-                        onNavigate = {
-                            currentScreen = "second"
-                        }
-                    )
-                } else {
-                    SecondScreen(
-                        viewModel = viewModel,
-                        onBack = { currentScreen = "main" }
-                    )
+                when (currentScreen) {
+
+                    "main" -> {
+                        MainScreen(
+                            viewModel = viewModel,
+                            onNavigate = { currentScreen = "second" }
+                        )
+                    }
+
+                    "second" -> {
+                        SecondScreen(
+                            viewModel = viewModel,
+                            onBack = { currentScreen = "main" },
+                            onCocktailClick = { currentScreen = "detail" }
+                        )
+                    }
+
+                    "detail" -> {
+                        DetailScreen(
+                            viewModel = viewModel,
+                            onBack = { currentScreen = "second" }
+                        )
+                    }
                 }
             }
         }

@@ -11,19 +11,22 @@ import com.sup2vinci.cocktailapp.viewmodel.MainViewModel
 import com.sup2vinci.cocktailapp.viewmodel.CocktailState
 
 @Composable
+
 fun SecondScreen(
     viewModel: MainViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onCocktailClick: () -> Unit
 ) {
     var query by remember { mutableStateOf("") }
     val state by viewModel.searchCocktailState.collectAsState()
     var errorMessage by remember { mutableStateOf("") }
+    val favorites by viewModel.favorites.collectAsState()
 
     Column(modifier = Modifier.padding(16.dp)) {
 
-        // 🔙 Bouton retour
+
         Button(onClick = {
-            viewModel.resetSearchState() // réinitialiser la recherche
+            viewModel.resetSearchState()
             onBack()
         }) {
             Text("Retour")
@@ -54,7 +57,7 @@ fun SecondScreen(
                 if (query.isBlank()) {
                     errorMessage = "Veuillez entrer du texte"
                 } else {
-                    errorMessage = "" // clear previous error
+                    errorMessage = ""
                     viewModel.searchCocktails(query)
                 }
             },
@@ -63,7 +66,6 @@ fun SecondScreen(
             Text("Rechercher")
         }
 
-        // ⚠️ Message d'erreur si champ vide
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
@@ -75,11 +77,11 @@ fun SecondScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔄 Gestion des états
+
         when (state) {
 
             is CocktailState.Idle -> {
-                // Rien à afficher avant première recherche
+
             }
 
             is CocktailState.Loading -> {
@@ -90,20 +92,41 @@ fun SecondScreen(
                 val cocktails = (state as CocktailState.Success).cocktails
                 LazyColumn {
                     items(cocktails) { drink ->
+
+                        val isFav = favorites.any { it.id == drink.id }
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp)
+                                .padding(vertical = 4.dp),
+                            onClick = {
+                                viewModel.selectCocktail(drink)
+                                onCocktailClick()
+                            }
                         ) {
-                            Column(modifier = Modifier.padding(8.dp)) {
-                                Text(
-                                    text = drink.name,
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                Text(
-                                    text = drink.category ?: "Catégorie inconnue",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                Column {
+                                    Text(
+                                        text = drink.name,
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = drink.category ?: "Catégorie inconnue",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+
+                                IconButton(onClick = {
+                                    viewModel.toggleFavorite(drink)
+                                }) {
+                                    Text(if (isFav) "❤️" else "🤍")
+                                }
                             }
                         }
                     }
