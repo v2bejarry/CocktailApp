@@ -1,12 +1,22 @@
 package com.sup2vinci.cocktailapp.view
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.sup2vinci.cocktailapp.viewmodel.MainViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     viewModel: MainViewModel,
@@ -19,36 +29,76 @@ fun DetailScreen(
         favorites.any { it.id == drink.id }
     } ?: false
 
-    Column(modifier = Modifier.padding(16.dp)) {
-
-        Button(onClick = { onBack() }) {
-            Text("Retour")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(cocktail?.name ?: "Détails") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                    }
+                },
+                actions = {
+                    cocktail?.let { drink ->
+                        IconButton(onClick = { viewModel.toggleFavorite(drink) }) {
+                            Icon(
+                                if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Favori",
+                                tint = if (isFav) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+            )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+    ) { paddingValues ->
         cocktail?.let { drink ->
-            val isFav = cocktail?.let { viewModel.isFavorite(it) } ?: false
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                AsyncImage(
+                    model = drink.thumbnail,
+                    contentDescription = drink.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp),
+                    contentScale = ContentScale.Crop
+                )
 
-            Text(drink.name, style = MaterialTheme.typography.titleLarge)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = drink.name,
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    
+                    Text(
+                        text = drink.category ?: "Catégorie inconnue",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-            Text("Catégorie : ${drink.category ?: "Inconnue"}")
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text("Instructions :")
-            Text(drink.instructions ?: "Aucune instruction")
-
-
-        Button(
-            onClick = {
-                cocktail?.let { viewModel.toggleFavorite(it) }
+                    Text(
+                        text = "Instructions",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Text(
+                        text = drink.instructions ?: "Aucune instruction disponible",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
             }
-        ) {
-            Text(if (isFav) "❤️ Retirer des favoris" else "🤍 Ajouter aux favoris")
-        }
         }
     }
 }
