@@ -3,12 +3,14 @@ package com.sup2vinci.cocktailapp.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,12 +41,20 @@ fun SplashScreen(onFinished: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Utilisation de ic_launcher_foreground qui est un VectorDrawable supporté
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "Logo",
-                modifier = Modifier.size(120.dp)
-            )
+            // Box pour créer le cercle de fond violet
+            Box(
+                modifier = Modifier
+                    .size(100.dp) // Taille du cercle
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary), // Utilise la couleur primaire (Violet)
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(100.dp) // Taille du logo à l'intérieur
+                )
+            }
             
             Spacer(modifier = Modifier.height(24.dp))
             
