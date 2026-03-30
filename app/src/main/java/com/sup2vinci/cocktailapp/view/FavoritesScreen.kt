@@ -3,9 +3,13 @@ package com.sup2vinci.cocktailapp.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.sup2vinci.cocktailapp.viewmodel.MainViewModel
@@ -20,12 +24,11 @@ fun FavoritesScreen(
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
             text = "Mes Favoris",
-            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         if (favorites.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Aucun favori pour le moment", style = MaterialTheme.typography.bodyLarge)
             }
         } else {
@@ -41,21 +44,37 @@ fun FavoritesScreen(
                         }
                     ) {
                         Row(
-                            modifier = Modifier.padding(8.dp),
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                            modifier = Modifier.fillMaxWidth().height(80.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             AsyncImage(
                                 model = drink.thumbnail,
                                 contentDescription = drink.name,
-                                modifier = Modifier.size(64.dp)
+                                modifier = Modifier.size(80.dp),
+                                contentScale = ContentScale.Crop
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(drink.name, style = MaterialTheme.typography.titleMedium)
-                                Text(drink.category ?: "", style = MaterialTheme.typography.bodySmall)
+                            
+                            Column(
+                                modifier = Modifier.weight(1f).padding(horizontal = 12.dp)
+                            ) {
+                                Text(
+                                    text = drink.name,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 1
+                                )
+                                Text(
+                                    text = drink.category ?: "Inconnu",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
                             }
+
                             IconButton(onClick = { viewModel.toggleFavorite(drink) }) {
-                                Text("❤️")
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = "Retirer des favoris",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
                             }
                         }
                     }

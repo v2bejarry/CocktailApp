@@ -1,7 +1,9 @@
 package com.sup2vinci.cocktailapp.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -9,7 +11,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -83,6 +87,37 @@ fun DetailScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // Section Ingrédients
+                    Text(
+                        text = "Ingrédients",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    drink.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primary)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = if (measure.isNotBlank()) "$ingredient ($measure)" else ingredient,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Section Instructions
                     Text(
                         text = "Instructions",
                         style = MaterialTheme.typography.titleLarge,

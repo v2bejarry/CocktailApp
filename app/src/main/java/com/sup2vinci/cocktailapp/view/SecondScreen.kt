@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,8 +28,7 @@ fun SecondScreen(
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
-            "Recherche",
-            style = MaterialTheme.typography.headlineMedium
+            "Recherche"
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -101,7 +102,11 @@ fun SecondScreen(
                                 }
 
                                 IconButton(onClick = { viewModel.toggleFavorite(drink) }) {
-                                    Text(if (isFav) "❤️" else "🤍")
+                                    Icon(
+                                        imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                        contentDescription = "Favori",
+                                        tint = if (isFav) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                    )
                                 }
                             }
                         }

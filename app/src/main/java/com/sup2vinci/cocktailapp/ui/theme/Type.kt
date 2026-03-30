@@ -7,12 +7,13 @@ import androidx.compose.ui.unit.sp
 import com.sup2vinci.cocktailapp.R
 
 val CustomFont = FontFamily(
-    Font(R.font.airstrikebold, FontWeight.Normal)
+    Font(R.font.arianavioleta, FontWeight.Normal)
 )
 
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = CustomFont,
-        fontSize = 16.sp
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp
     )
 )

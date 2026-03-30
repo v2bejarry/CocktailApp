@@ -1,5 +1,6 @@
 package com.sup2vinci.cocktailapp.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,11 +12,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.sup2vinci.cocktailapp.model.Drink
 import com.sup2vinci.cocktailapp.viewmodel.CocktailState
 import com.sup2vinci.cocktailapp.viewmodel.MainViewModel
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(viewModel: MainViewModel, onCocktailClick: (Drink) -> Unit) {
     val state by viewModel.randomCocktailState.collectAsState()
 
     Column(
@@ -27,7 +29,6 @@ fun MainScreen(viewModel: MainViewModel) {
     ) {
         Text(
             text = "Cocktail du moment",
-            style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 24.dp)
         )
@@ -49,7 +50,9 @@ fun MainScreen(viewModel: MainViewModel) {
                 val cocktail = (state as CocktailState.Success).cocktails.first()
                 
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onCocktailClick(cocktail) },
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Column {
@@ -83,7 +86,8 @@ fun MainScreen(viewModel: MainViewModel) {
                             )
                             Text(
                                 text = cocktail.instructions ?: "Aucune instruction",
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
+                                maxLines = 3
                             )
                         }
                     }

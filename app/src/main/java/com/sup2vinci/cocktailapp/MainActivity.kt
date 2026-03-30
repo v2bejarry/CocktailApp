@@ -74,7 +74,13 @@ class MainActivity : ComponentActivity() {
                                 )
                             } else {
                                 when (currentTab) {
-                                    "home" -> MainScreen(viewModel = viewModel)
+                                    "home" -> MainScreen(
+                                        viewModel = viewModel,
+                                        onCocktailClick = { cocktail ->
+                                            viewModel.selectCocktail(cocktail)
+                                            showDetail = true
+                                        }
+                                    )
                                     "search" -> SecondScreen(
                                         viewModel = viewModel,
                                         onCocktailClick = { showDetail = true }
